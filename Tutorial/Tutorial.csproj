@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SmartConsole-Framework\SmartConsole-Framework.csproj">
-      <Project>{992c48fb-824c-4446-9d1c-c8dab04958b1}</Project>
-      <Name>SmartConsole-Framework</Name>
+    <ProjectReference Include="..\SmartConsole-Standard\SmartConsole-Standard.csproj">
+      <Project>{6c11756f-e0ec-43a6-89ea-1bcb8d0d64eb}</Project>
+      <Name>SmartConsole-Standard</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

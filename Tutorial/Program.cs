@@ -34,7 +34,13 @@ namespace Tutorial
             string text = SmartConsole.Input.ReadString("Please write text from 5 to 10 lenght: ", minLenght: 5, maxLenght: 10); //Read string with min lenght 5 and max lenght 10
             SmartConsole.Input.WriteLine(text); //WRITE STRING
 
-           int result = SmartConsole.Input.Menu(new string[] { "Option 1", "Option 2", "Option 3" }, "Choose an option!", "Please!"); //Menu, first array is for options, then header, then subheader, then colors, result is array index
+            SmartConsole.Input.translate.errors = new ErrorsDifferent(); //Replace translate errors class with our class
+            integer = SmartConsole.Input.ReadInt("Write number and make mistake: "); //Example how translate works
+
+            SmartConsole.Input.translate.errors = new SmartConsole.Translate.Errors(); //Fix to original translate class
+            integer = SmartConsole.Input.ReadInt("Write number and make mistake: "); //Example how translate works
+
+            int result = SmartConsole.Input.Menu(new string[] { "Option 1", "Option 2", "Option 3" }, "Choose an option!", "Please!"); //Menu, first array is for options, then header, then subheader, then colors, result is array index
             switch (result)
             {
                 case 0:
@@ -48,5 +54,10 @@ namespace Tutorial
                     break;
             }
         }
+        class ErrorsDifferent : SmartConsole.Translate.Errors //INHERIT
+        {
+            public override string WrongInputNumber => "BLAH BLAH BLAH"; //OVERRIDE TARGET STRINGS
+        }
+
     }
 }

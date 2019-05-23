@@ -3,6 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SmartConsole_Standard</RootNamespace>
+    <PackageId>SmartConsole</PackageId>
+    <Version>0.0.2</Version>
+    <Authors>Richard "TekuSP" Torhan</Authors>
+    <Product>SmartConsole</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/TekuSP/SmartConsole/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/TekuSP/SmartConsole</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TekuSP/SmartConsole</RepositoryUrl>
+    <Copyright>Richard "TekuSP" Torhan 2019</Copyright>
+    <RepositoryType>Github</RepositoryType>
   </PropertyGroup>
 
 </Project>

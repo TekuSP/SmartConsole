@@ -7,7 +7,17 @@ namespace TekuSP.Utilities
     {
         public static class Input
         {
+            public static Translate translate = new Translate();
+            /// <summary>
+            /// Writes with line break to terminal/console output
+            /// </summary>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void WriteLine(object objectToWrite) => Console.WriteLine(objectToWrite.ToString());
+            /// <summary>
+            /// Writes with line break to terminal/console output
+            /// </summary>
+            /// <param name="color">Color to text be written in</param>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void WriteLine(ConsoleColor color, object objectToWrite)
             {
                 ConsoleColor oldColor = Console.ForegroundColor;
@@ -15,7 +25,16 @@ namespace TekuSP.Utilities
                 WriteLine(objectToWrite);
                 Console.ForegroundColor = color;
             }
+            /// <summary>
+            /// Writes to terminal/console output
+            /// </summary>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void Write(object objectToWrite) => Console.Write(objectToWrite.ToString());
+            /// <summary>
+            /// Writes to terminal/console output
+            /// </summary>
+            /// <param name="color">Color to text be written in</param>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void Write(ConsoleColor color, object objectToWrite)
             {
                 ConsoleColor oldColor = Console.ForegroundColor;
@@ -23,7 +42,16 @@ namespace TekuSP.Utilities
                 Write(objectToWrite);
                 Console.ForegroundColor = color;
             }
+            /// <summary>
+            /// Writes centered text on screen with line break to terminal/console output
+            /// </summary>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void WriteCentered(object objectToWrite) => Console.WriteLine(string.Format("{0," + ((Console.WindowWidth / 2) + (objectToWrite.ToString().Length / 2)) + "}", objectToWrite.ToString()));
+            /// <summary>
+            /// Writes centered text on screen with line break to terminal/console output
+            /// </summary>
+            /// <param name="color">Color to text be written in</param>
+            /// <param name="objectToWrite">Target object to write</param>
             public static void WriteCentered(ConsoleColor color, object objectToWrite)
             {
                 ConsoleColor oldColor = Console.ForegroundColor;
@@ -32,39 +60,61 @@ namespace TekuSP.Utilities
                 Console.ForegroundColor = color;
             }
 
+            /// <summary>
+            /// Reads line from terminal/console input and parses string with minimal lenght and maximal lenght with specified header and checks on invalid input, asking user to try again.
+            /// </summary>
+            /// <param name="header">Header text before reading input</param>
+            /// <param name="headerColor">Color to header be written in</param>
+            /// <param name="minLenght">Minimal lenght of target string</param>
+            /// <param name="maxLenght">Maximal lenght of target string</param>
+            /// <returns>Returns null if user cancels operation or string with read text</returns>
             public static string ReadString(string header = "", ConsoleColor headerColor = ConsoleColor.White, int minLenght = 0, int maxLenght = int.MaxValue)
             {
                 Write(headerColor, header);
                 string read = Console.ReadLine();
                 if (read.Length < minLenght || read.Length > maxLenght)
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputString, Translate.Messages.InputTextRule(minLenght, maxLenght)) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputString, translate.messages.InputTextRule(minLenght, maxLenght)) == 0)
                         return ReadString(header, headerColor, minLenght, maxLenght);
                     else
                         return null;
                 }
                 return read;
             }
+            /// <summary>
+            /// Read line from terminal/console input and parses int with minimal size and maximal size with specified header and checks on invalid input, asking user to try again.
+            /// </summary>
+            /// <param name="header">Header text before reading input</param>
+            /// <param name="headerColor">Color to header be written in</param>
+            /// <param name="minLenght">Minimal number to be accepted</param>
+            /// <param name="maxLenght">Maximal number to be accepted</param>
+            /// <returns>Returns null if user cancels operation or int with target number</returns>
             public static int? ReadInt(string header = "", ConsoleColor headerColor = ConsoleColor.White, int minLenght = 0, int maxLenght = int.MaxValue)
             {
                 Write(headerColor, header);
                 string read = ReadString();
                 if (!int.TryParse(read, out int result) || result < minLenght || result > maxLenght)
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputNumber, Translate.Messages.InputNumberRule(minLenght, maxLenght)) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputNumber, translate.messages.InputNumberRule(minLenght, maxLenght)) == 0)
                         return ReadInt(header, headerColor, minLenght, maxLenght);
                     else
                         return null;
                 }
                 return result;
             }
+            /// <summary>
+            /// Read line from terminal/console input and parses DateTime with only Time with specified header and checks on invalid input, asking user to try again.
+            /// </summary>
+            /// <param name="header">Header text before reading input</param>
+            /// <param name="headerColor">Color to header be written in</param>
+            /// <returns>Returns null if user cancels operation or DateTime with Time filled in</returns>
             public static DateTime? ReadTime(string header = "", ConsoleColor headerColor = ConsoleColor.White)
             {
                 Write(headerColor, header);
                 string read = ReadString();
                 if (!new Regex(@"^(?i)(0?[1-9]|1[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?( AM| PM)?$").IsMatch(read))
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputTime) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputTime) == 0)
                         return ReadTime(header, headerColor);
                     else
                         return null;
@@ -79,39 +129,66 @@ namespace TekuSP.Utilities
                     hour += 12;
                 if (hour > 24)
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputTime) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputTime) == 0)
                         return ReadTime(header, headerColor);
                     else
                         return null;
                 }
                 return new DateTime(1, 1, 1, hour, minute, second);
             }
+            /// <summary>
+            /// Read line from terminal/console input and parses DateTime with only Date with minimal accepted Date and maximal accepted Date specified header and checks on invalid input, asking user to try again.
+            /// </summary>
+            /// <param name="min">Minimal date to be accepted</param>
+            /// <param name="max">Maximal date to be accepted</param>
+            /// <param name="header">Header text before reading input</param>
+            /// <param name="headerColor">Color to header be written in</param>
+            /// <returns>Returns null if user cancels operation or DateTime with Date filled in</returns>
             public static DateTime? ReadDate(DateTime min, DateTime max, string header = "", ConsoleColor headerColor = ConsoleColor.White)
             {
                 Write(headerColor, header);
                 string read = ReadString();
                 if (!DateTime.TryParse(read, out DateTime result) || result < min || result > max)
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputDate, Translate.Messages.InputDateRule(min, max)) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputDate, translate.messages.InputDateRule(min, max)) == 0)
                         return ReadDate(min, max, header, headerColor);
                     else
                         return null;
                 }
                 return result;
             }
+            /// <summary>
+            /// Read line from terminal/console input and parses DateTime with minimal accepted Date and maximal accepted Date specified header and checks on invalid input, asking user to try again.
+            /// </summary>
+            /// <param name="min">Minimal DateTime to be accepted</param>
+            /// <param name="max">Maximal DateTime to be accepted</param>
+            /// <param name="header">Header text before reading input</param>
+            /// <param name="headerColor">Color to header be written in</param>
+            /// <returns>Returns null if user cancels operation or DateTime</returns>
             public static DateTime? ReadDateTime(DateTime min, DateTime max, string header = "", ConsoleColor headerColor = ConsoleColor.White)
             {
                 Write(headerColor, header);
                 string read = ReadString();
                 if (!DateTime.TryParse(read, out DateTime result) || result < min || result > max)
                 {
-                    if (Menu(new string[] { Translate.Messages.Yes, Translate.Messages.No }, Translate.Errors.WrongInputDateTime, Translate.Messages.InputDateTimeRule(min, max)) == 0)
+                    if (Menu(new string[] { translate.messages.Yes, translate.messages.No }, translate.errors.WrongInputDateTime, translate.messages.InputDateTimeRule(min, max)) == 0)
                         return ReadDate(min, max, header, headerColor);
                     else
                         return null;
                 }
                 return result;
             }
+            /// <summary>
+            /// Creates Console Menu
+            /// </summary>
+            /// <param name="array">Menu options</param>
+            /// <param name="header">Title of menu</param>
+            /// <param name="subheader">Subtitle of menu</param>
+            /// <param name="textColor">Color of menu options</param>
+            /// <param name="headerColor">Color of title</param>
+            /// <param name="subHeaderColor">Color of subtitle</param>
+            /// <param name="bracketColor">Color of selected bracket</param>
+            /// <returns>Returns index of which item in array was selected</returns>
             public static int Menu(string[] array, string header = null, string subheader = null, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
             {
                 ConsoleColor startingColor = System.Console.ForegroundColor;
@@ -156,24 +233,34 @@ namespace TekuSP.Utilities
                 }
             }
         }
-        public static class Translate
+        /// <summary>
+        /// This class is used to translate every message written by SmartConsole. You can replace these messages by inheritng subclasses and then overriding to have different messages.
+        /// </summary>
+        public class Translate
         {
-            public static class Errors
+            public Errors errors;
+            public Messages messages;
+            public Translate()
             {
-                public static string WrongInputNumber => "You have inputed invalid number. Do you want try again?";
-                public static string WrongInputString => "You have inputed invalid text. Do you want try again?";
-                public static string WrongInputDateTime => "You have inputed invalid date and time. Do you want try again?";
-                public static string WrongInputDate => "You have inputed invalid date. Do you want try again?";
-                public static string WrongInputTime => "You have inputed invalid time. Do you want try again?";
+                errors = new Errors();
+                messages = new Messages();
             }
-            public static class Messages
+            public class Errors
             {
-                public static string Yes => "Yes";
-                public static string No => "No";
-                public static string InputTextRule(int min, int max) => string.Format("Input has to be minimally {0} long and maximally {1} long.", min, max);
-                public static string InputNumberRule(int min, int max) => string.Format("Input has to be number from {0} to {1}.", min, max);
-                public static string InputDateRule(DateTime min, DateTime max) => string.Format("Input has to be Date from {0} to {1}.", min.ToShortDateString(), max.ToShortDateString());
-                public static string InputDateTimeRule(DateTime min, DateTime max) => string.Format("Input has to be Date and Time from {0} to {1}.", min, max);
+                public virtual string WrongInputNumber => "You have inputed invalid number. Do you want try again?";
+                public virtual string WrongInputString => "You have inputed invalid text. Do you want try again?";
+                public virtual string WrongInputDateTime => "You have inputed invalid date and time. Do you want try again?";
+                public virtual string WrongInputDate => "You have inputed invalid date. Do you want try again?";
+                public virtual string WrongInputTime => "You have inputed invalid time. Do you want try again?";
+            }
+            public class Messages
+            {
+                public virtual string Yes => "Yes";
+                public virtual string No => "No";
+                public virtual string InputTextRule(int min, int max) => string.Format("Input has to be minimally {0} long and maximally {1} long.", min, max);
+                public virtual string InputNumberRule(int min, int max) => string.Format("Input has to be number from {0} to {1}.", min, max);
+                public virtual string InputDateRule(DateTime min, DateTime max) => string.Format("Input has to be Date from {0} to {1}.", min.ToShortDateString(), max.ToShortDateString());
+                public virtual string InputDateTimeRule(DateTime min, DateTime max) => string.Format("Input has to be Date and Time from {0} to {1}.", min, max);
 
             }
         }

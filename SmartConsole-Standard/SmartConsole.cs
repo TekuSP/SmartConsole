@@ -184,12 +184,13 @@ namespace TekuSP.Utilities
             /// <param name="array">Menu options</param>
             /// <param name="header">Title of menu</param>
             /// <param name="subheader">Subtitle of menu</param>
+            /// <param name="centered">Should be menu centered on screen?</param>
             /// <param name="textColor">Color of menu options</param>
             /// <param name="headerColor">Color of title</param>
             /// <param name="subHeaderColor">Color of subtitle</param>
             /// <param name="bracketColor">Color of selected bracket</param>
             /// <returns>Returns index of which item in array was selected</returns>
-            public static int Menu(string[] array, string header = null, string subheader = null, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
+            public static int Menu(string[] array, string header = null, string subheader = null, bool centered = false, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
             {
                 ConsoleColor startingColor = System.Console.ForegroundColor;
                 int choice = 0;
@@ -229,6 +230,67 @@ namespace TekuSP.Utilities
                             Console.ForegroundColor = startingColor;
                             Console.Clear();
                             return choice;
+                    }
+                }
+            }
+            /// <summary>
+            /// Password input
+            /// </summary>
+            /// <param name="visible">If should be * or spaces</param>
+            /// <returns>Password</returns>
+            public static string PasswordInput(bool visible)
+            {
+                int left = System.Console.CursorLeft;
+                int top = System.Console.CursorTop;
+                string password = "";
+                System.ConsoleKeyInfo input;
+                while (true)
+                {
+                    input = System.Console.ReadKey();
+
+                    if (input.Key != System.ConsoleKey.Enter)
+                    {
+                        if (input.Key != System.ConsoleKey.Backspace)
+                        {
+                            password += input.KeyChar;
+                            System.Console.SetCursorPosition(left, top);
+                            for (int x = 0; x < password.Length; x++)
+                            { 
+                                if(visible)
+                                    System.Console.Write("*");
+                                else
+                                    System.Console.Write(" ");
+                            }
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(password))
+                            {
+                                password = password.Substring(0, password.Length - 1);
+                                System.Console.SetCursorPosition(top, left);
+                                for (int x = 0; x < password.Length + 1; x++) { System.Console.Write(" "); }
+                                System.Console.SetCursorPosition(top, left);
+                                for (int x = 0; x < password.Length; x++)
+                                {
+                                    if (visible)
+                                        System.Console.Write("*");
+                                    else
+                                        System.Console.Write(" ");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < password.Length; i++) 
+                        {
+                            if (visible)
+                                System.Console.Write("*");
+                            else
+                                System.Console.Write(" ");
+                        }
+                        System.Console.WriteLine();
+                        return password;
                     }
                 }
             }

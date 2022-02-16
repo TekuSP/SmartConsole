@@ -185,31 +185,88 @@ namespace TekuSP.Utilities
             /// <param name="header">Title of menu</param>
             /// <param name="subheader">Subtitle of menu</param>
             /// <param name="centered">Should be menu centered on screen?</param>
+            /// <param name="useFixedBrackets">If brackets should be fixed on largest object, or different on every item</param>
             /// <param name="textColor">Color of menu options</param>
             /// <param name="headerColor">Color of title</param>
             /// <param name="subHeaderColor">Color of subtitle</param>
             /// <param name="bracketColor">Color of selected bracket</param>
             /// <returns>Returns index of which item in array was selected</returns>
-            public static int Menu(string[] array, string header = null, string subheader = null, bool centered = false, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
+            public static int Menu(string[] array, string header = null, string subheader = null, bool centered = false, bool useFixedBrackets = false, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
             {
                 ConsoleColor startingColor = System.Console.ForegroundColor;
                 int choice = 0;
                 ConsoleKeyInfo input;
+                int largestItem = 0;
+                if (useFixedBrackets)
+                {
+                    foreach (var item in array)
+                    {
+                        if (largestItem < item.Length)
+                            largestItem = item.Length;
+                    }
+                }
                 while (true)
                 {
                     Console.Clear();
                     if (header != null)
-                        WriteLine(headerColor, header);
+                        if (centered)
+                            WriteCentered(headerColor, header);
+                        else
+                            WriteLine(headerColor, header);
                     if (subheader != null && header != null)
-                        WriteLine(subHeaderColor, subheader);
+                        if (centered)
+                            WriteCentered(subHeaderColor, subheader);
+                        else
+                            WriteLine(subHeaderColor, subheader);
+                    if (header != null)
+                    {
+                        int length = header.Length;
+                        bool hdr = length < subheader?.Length;
+                        if (hdr)
+                            length = subheader.Length;
+                        string buff = "";
+                        for (int i = 0; i < length; i++)
+                            buff += "-";
+                        if (centered)
+                            WriteCentered(hdr ? headerColor : subHeaderColor, buff);
+                        else
+                            WriteLine(hdr ? headerColor : subHeaderColor, buff);
+                    }
                     for (int i = 0; i < array.Length; i++)
                     {
                         if (i == choice)
                         {
+                            if (centered)
+                            {
+                                double times = ((Console.WindowWidth)/2 + ($"[ {array[i]} ]".ToString().Length / 2) - ($"[ {array[i]} ]".ToString().Length));
+                                if (useFixedBrackets)
+                                {
+                                    times -= Math.Round((largestItem - array[i].Length + 4) / 2d);
+                                    if (times % 2 != 0)
+                                        times--;
+                                }
+                                for (int y = 0; y < times; y++)
+                                    Write(" ");
+                            }
                             Write(bracketColor, "[ ");
+                            if (useFixedBrackets)
+                            {
+                                var times = Math.Ceiling((largestItem - array[i].Length + 4) / 2d);
+                                for (int y = 0; y < times; y++)
+                                    Write(" ");
+                            }
                             Write(textColor, array[i]);
+                            if (useFixedBrackets)
+                            {
+                                var times = Math.Floor((largestItem - array[i].Length + 4) / 2d);
+                                for (int y = 0; y < times; y++)
+                                    Write(" ");
+                            }
                             WriteLine(bracketColor, " ]");
                         }
+                        else
+                            if (centered)
+                            WriteCentered(textColor, array[i]);
                         else
                             WriteLine(textColor, string.Format("  {0}  ", array[i]));
                     }
@@ -255,8 +312,8 @@ namespace TekuSP.Utilities
                             password += input.KeyChar;
                             System.Console.SetCursorPosition(left, top);
                             for (int x = 0; x < password.Length; x++)
-                            { 
-                                if(visible)
+                            {
+                                if (visible)
                                     System.Console.Write("*");
                                 else
                                     System.Console.Write(" ");
@@ -267,9 +324,9 @@ namespace TekuSP.Utilities
                             if (!string.IsNullOrEmpty(password))
                             {
                                 password = password.Substring(0, password.Length - 1);
-                                System.Console.SetCursorPosition(top, left);
-                                for (int x = 0; x < password.Length + 1; x++) { System.Console.Write(" "); }
-                                System.Console.SetCursorPosition(top, left);
+                                System.Console.SetCursorPosition(left + password.Length, top);
+                                System.Console.Write(" ");
+                                System.Console.SetCursorPosition(left, top);
                                 for (int x = 0; x < password.Length; x++)
                                 {
                                     if (visible)
@@ -278,11 +335,15 @@ namespace TekuSP.Utilities
                                         System.Console.Write(" ");
                                 }
                             }
+                            else
+                            {
+                                System.Console.SetCursorPosition(left, top);
+                            }
                         }
                     }
                     else
                     {
-                        for (int i = 0; i < password.Length; i++) 
+                        for (int i = 0; i < password.Length; i++)
                         {
                             if (visible)
                                 System.Console.Write("*");

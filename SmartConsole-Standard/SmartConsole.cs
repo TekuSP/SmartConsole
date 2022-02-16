@@ -191,20 +191,13 @@ namespace TekuSP.Utilities
             /// <param name="subHeaderColor">Color of subtitle</param>
             /// <param name="bracketColor">Color of selected bracket</param>
             /// <returns>Returns index of which item in array was selected</returns>
-            public static int Menu(string[] array, string header = null, string subheader = null, bool centered = false, bool useFixedBrackets = false, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
+            public static int Menu(string[] array, string header = null, string subheader = null, string footer = null, bool centered = false, ConsoleColor textColor = ConsoleColor.White, ConsoleColor headerColor = ConsoleColor.White, ConsoleColor subHeaderColor = ConsoleColor.White, ConsoleColor footerColor = ConsoleColor.White, ConsoleColor bracketColor = ConsoleColor.White)
             {
+                Console.CursorVisible = false;
                 ConsoleColor startingColor = System.Console.ForegroundColor;
                 int choice = 0;
                 ConsoleKeyInfo input;
                 int largestItem = 0;
-                if (useFixedBrackets)
-                {
-                    foreach (var item in array)
-                    {
-                        if (largestItem < item.Length)
-                            largestItem = item.Length;
-                    }
-                }
                 while (true)
                 {
                     Console.Clear();
@@ -239,29 +232,11 @@ namespace TekuSP.Utilities
                             if (centered)
                             {
                                 double times = ((Console.WindowWidth)/2 + ($"[ {array[i]} ]".ToString().Length / 2) - ($"[ {array[i]} ]".ToString().Length));
-                                if (useFixedBrackets)
-                                {
-                                    times -= Math.Round((largestItem - array[i].Length + 4) / 2d);
-                                    if (times % 2 != 0)
-                                        times--;
-                                }
                                 for (int y = 0; y < times; y++)
                                     Write(" ");
                             }
                             Write(bracketColor, "[ ");
-                            if (useFixedBrackets)
-                            {
-                                var times = Math.Ceiling((largestItem - array[i].Length + 4) / 2d);
-                                for (int y = 0; y < times; y++)
-                                    Write(" ");
-                            }
                             Write(textColor, array[i]);
-                            if (useFixedBrackets)
-                            {
-                                var times = Math.Floor((largestItem - array[i].Length + 4) / 2d);
-                                for (int y = 0; y < times; y++)
-                                    Write(" ");
-                            }
                             WriteLine(bracketColor, " ]");
                         }
                         else
@@ -269,6 +244,27 @@ namespace TekuSP.Utilities
                             WriteCentered(textColor, array[i]);
                         else
                             WriteLine(textColor, string.Format("  {0}  ", array[i]));
+                    }
+                    if (header != null)
+                    {
+                        int length = header.Length;
+                        bool hdr = length < subheader?.Length;
+                        if (hdr)
+                            length = subheader.Length;
+                        string buff = "";
+                        for (int i = 0; i < length; i++)
+                            buff += "-";
+                        if (centered)
+                            WriteCentered(hdr ? headerColor : subHeaderColor, buff);
+                        else
+                            WriteLine(hdr ? headerColor : subHeaderColor, buff);
+                    }
+                    if (footer != null) 
+                    {
+                        if (centered)
+                            WriteCentered(footerColor, footer);
+                        else
+                            Write(footerColor, footer);
                     }
                     input = Console.ReadKey();
                     switch (input.Key)
@@ -286,6 +282,7 @@ namespace TekuSP.Utilities
                         case ConsoleKey.Enter:
                             Console.ForegroundColor = startingColor;
                             Console.Clear();
+                            Console.CursorVisible = true;
                             return choice;
                     }
                 }

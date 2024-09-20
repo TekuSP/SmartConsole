@@ -1,7 +1,9 @@
 pull_request_rules:
     - name: Automatically merge PRs
       conditions:
-      - check-success=continuous-integration/travis/pr
+      - check-success=.NET Core Linux
+      - check-success=.NET Core Mac Os X   
+      - check-success=.NET Core windows      
       - "#approved-reviews-by>=1"
       actions:
         merge:
